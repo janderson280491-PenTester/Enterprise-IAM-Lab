@@ -1,0 +1,67 @@
+# AndersonTech IAM Lab — Entra ID Module
+
+A hands-on identity and access management lab built to demonstrate practical
+Microsoft Entra ID (Azure AD) administration and automation skills, alongside
+a companion on-premises Active Directory environment.
+
+This repo covers the **cloud-native Entra ID portion** of the lab. The
+on-premises AD side (OUs, security groups, GPOs) was built separately in
+`andersontech.local` and is documented in a sibling repo/section.
+
+## Why two separate labs instead of one hybrid environment
+
+The original plan was a fully hybrid setup (on-prem AD synced to Entra ID via
+Entra Connect). Entra Connect installation was blocked in the cloud-hosted
+environment used for this lab, so the two pieces were built and documented
+independently instead:
+
+- **On-prem AD lab** — OU structure, department security groups, Group
+  Policy Objects (screen lock, Control Panel restrictions, account lockout
+  policy)
+- **Entra ID lab (this repo)** — cloud-native users, groups, licensing-aware
+  security controls, and Graph API automation
+
+Documenting *why* the hybrid sync didn't happen, rather than hiding it, is
+intentional — troubleshooting real environment constraints is itself part of
+the IAM story.
+
+## What's in this lab
+
+| Area | What was built | Notes |
+|---|---|---|
+| Users | ~40 users created via bulk CSV import | Mirrors the department structure from the on-prem AD lab |
+| Groups | Static security groups per department (SG-IT, SG-Sales, etc.) | Assigned membership — dynamic membership requires Entra ID P1 |
+| Security Defaults | Enabled tenant-wide MFA enforcement | Free-tier alternative to Conditional Access, which requires P1/P2 |
+| Roles | Scoped built-in role assignment (e.g., Groups Administrator limited to a specific group) | Demonstrates least-privilege without requiring PIM (P2) |
+| App registration | Registered a sample app (`AndersonTech-UserAuditTool`) with `User.Read.All` delegated permission only | Least-privilege applied to application permissions, not just users |
+| Logging | Reviewed Audit Logs and Sign-in Logs for traceability | Included as screenshots in `/screenshots` |
+
+## Licensing notes (worth knowing, not just working around)
+
+Entra ID Free tier does **not** include Conditional Access, PIM, Access
+Reviews, or dynamic group membership — those require P1 or P2, and even the
+free trial of P2 requires a credit card for identity verification. Rather
+than activate a trial, this lab deliberately stayed on Free tier and used
+the closest equivalent capability at each step (e.g., Security Defaults
+instead of Conditional Access). The gaps are documented here rather than
+glossed over, since knowing exactly what a licensing tier unlocks is itself
+a relevant IAM operations skill.
+
+## Repo structure
+
+```
+entra-lab/
+├── README.md
+└── screenshots/
+    ├── security-defaults-enabled.png
+    ├── audit-logs.png
+    └── app-registration-permissions.png
+```
+
+## Skills demonstrated
+
+- Entra ID tenant administration (users, groups, roles)
+- Understanding of Entra ID licensing tiers and their practical implications
+- Least-privilege principle applied to both user and application permissions
+- Environment troubleshooting and clear technical documentation of
+  constraints encountered
